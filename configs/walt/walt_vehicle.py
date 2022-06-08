@@ -1,6 +1,6 @@
 _base_ = [
     '../_base_/models/occ_mask_rcnn_swin_fpn.py',
-    '../_base_/datasets/parking_real_coco.py',
+    '../_base_/datasets/walt_vehicle.py',
     '../_base_/schedules/schedule_1x.py', '../_base_/default_runtime.py'
 ]
 
