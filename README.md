@@ -31,10 +31,13 @@ Then CWALT dataset can be generated using
 python cwalt_generate.py
 ```
 
-For training run
+For Training run
 
 ```bash
 python train.py configs/walt/walt_vehicle.py
 ```
 
-
+For Testing run
+```bash
+python test.py configs/walt/walt_vehicle.py data/models/walt_vehicle.pth
+```
