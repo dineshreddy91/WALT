@@ -7,6 +7,8 @@ IEEE Conference on Computer Vision and Pattern Recognition (CVPR), 2019.
 
 [[Project](https://www.cs.cmu.edu/~walt/)] [[Paper](https://openaccess.thecvf.com/content/CVPR2022/papers/Reddy_WALT_Watch_and_Learn_2D_Amodal_Representation_From_Time-Lapse_Imagery_CVPR_2022_paper.pdf)] [[Supp](https://openaccess.thecvf.com/content/CVPR2022/supplemental/Reddy_WALT_Watch_and_CVPR_2022_supplemental.zip)] [[Bibtex](http://www.cs.cmu.edu/~walt/walt.bib) ]
 
+![Alt Text](6jdd6m.gif)
+
 ## Installation
 
 ### Setting up with docker
