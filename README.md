@@ -15,24 +15,50 @@ IEEE Conference on Computer Vision and Pattern Recognition (CVPR), 2022.
 
 All the stable releases of docker-ce installed from https://docs.docker.com/install/
 
-Install the nvidia-docker from https://github.com/NVIDIA/nvidia-docker
-
 Setting up the docker
 
 ```bash
 docker build -t walt docker/
 ```
 
-## Training WaltNet
+## Implementation of WALT
 We Will show the steps to follow to train the walt network to produce amodal segmentation results on any camera in the wild. 
 
-Firstly you need to generate the CWALT data composition. To do that we need to download the walt dataset from [HERE](http://www.cs.cmu.edu/~walt/license.html) and annotations from [HERE](http://www.cs.cmu.edu/~walt/data/annotations.zip)
+### Generating CWALT dataset
+Firstly you need to generate the CWALT data composition. To do that we need to download the walt dataset from [HERE](http://www.cs.cmu.edu/~walt/license.html).
+
+The final folder format to train on carfusion data needs to look :
+
+ ```text
+WALT
+  └─data
+      └─cam2
+          └─cam2.json
+          └─week1
+              2021-05-01T00-02-23.775683.jpg
+	      2021-05-01T00-44-55.207427.jpg
+              ...
+          └─week2
+              2021-05-08T00-00-59.416878.jpg
+	      2021-05-08T00-18-03.210882.jpg
+              ...
+           ...
+
+          └─T01-median_image.jpg
+            T02-median_image.jpg
+            T03-median_image.jpg
+            ...	
+                
+```
+
  
 Then CWALT dataset can be generated using 
 ```bash
-python cwalt_generate.py
+docker run --gpus all --shm-size=8g -v $PWD:/code walt python cwalt_generate.py
 ```
+<img src="github_vis/cwalt.gif" width="800" height="300"/>
 
+### Training WALTNET
 For Training run
 
 ```bash
