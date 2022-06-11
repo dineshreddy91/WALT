@@ -3,7 +3,7 @@ WALT:Watch and Learn 2D Amodal Representation using time-lapse imagery
 
 [N Dinesh Reddy](http://cs.cmu.edu/~dnarapur), [Robert T](http://cs.cmu.edu/~mvo), [Srinivasa G. Narasimhan](http://www.cs.cmu.edu/~srinivas/)
 
-IEEE Conference on Computer Vision and Pattern Recognition (CVPR), 2019. 
+IEEE Conference on Computer Vision and Pattern Recognition (CVPR), 2022. 
 
 [[Project](https://www.cs.cmu.edu/~walt/)] [[Paper](https://openaccess.thecvf.com/content/CVPR2022/papers/Reddy_WALT_Watch_and_Learn_2D_Amodal_Representation_From_Time-Lapse_Imagery_CVPR_2022_paper.pdf)] [[Supp](https://openaccess.thecvf.com/content/CVPR2022/supplemental/Reddy_WALT_Watch_and_CVPR_2022_supplemental.zip)] [[Bibtex](http://www.cs.cmu.edu/~walt/walt.bib) ]
 
