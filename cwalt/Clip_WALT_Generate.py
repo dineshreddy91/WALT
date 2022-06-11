@@ -23,6 +23,9 @@ from psycopg2.extras import RealDictCursor
 import psycopg2
 import cv2
 
+import numpy as np
+from tqdm import tqdm
+
 
 def ignore_indexes(tracks_all, labels_all):
     # get repeating bounding boxes
@@ -71,8 +74,8 @@ def get_unoccluded_instances(timestamps_final, tracks_all, ignore_ind=[], thresh
     time_checked = []
     stationary_obj = []
     count =0 
-    for time in np.unique(timestamps_final):
-        print('Detecting Unocclued objects in Image ', count, len(np.unique(timestamps_final)))
+    
+    for time in tqdm(np.unique(timestamps_final), desc="Detecting Unocclued objects in Image "):
         count += 1
         if [time.year,time.month, time.day, time.hour, time.minute, time.second, time.microsecond] in time_checked:
             analyze_bb = []
@@ -111,15 +114,15 @@ def get_unoccluded_instances(timestamps_final, tracks_all, ignore_ind=[], thresh
         time_checked.append([time.year,time.month, time.day, time.hour, time.minute, time.second, time.microsecond])
     return unoccluded_indexes,stationary_obj
                                 
-def visualize_unoccluded_detection(timestamps_final,tracks_all,segmentation_all,  unoccluded_indexes, ignore_ind=[]):            
+def visualize_unoccluded_detection(timestamps_final,tracks_all,segmentation_all,  unoccluded_indexes, cwalt_data_path, camera_name, ignore_ind=[]):            
     tracks_final = []
     tracks_final.append([])
     try:
         os.mkdir(cwalt_data_path + '/' + camera_name+'_unoccluded_car_detection/')
     except:
-        print(cwalt_data_path + '/' + camera_name+'_unoccluded_car_detection/')
+        print('Unoccluded debugging exists')
             
-    for time in np.unique(timestamps_final):
+    for time in tqdm(np.unique(timestamps_final), desc="Visualizing Unocclued objects in Image "):
         get_indexes = lambda x, xs: [i for (y, i) in zip(xs, range(len(xs))) if x==y]
         ind = get_indexes(time, timestamps_final)
         image_unocc = False
@@ -132,12 +135,18 @@ def visualize_unoccluded_detection(timestamps_final,tracks_all,segmentation_all,
         if image_unocc == False:
             continue
             
-        try:
-            image = np.array(Image.open(data_folder+'/'+str(time.year)+'-'+str(time.month).zfill(2) +'/'+ str(time).replace(' ','T').replace(':','-').split('+')[0] + '.jpg'))
-        except:
-            print(data_folder+'/'+str(time.year)+'-'+str(time.month).zfill(2) +'/'+ str(time).replace(' ','T').replace(':','-').split('+')[0] + '.jpg ' + 'image not found') 
+        for week_loop in range(5):
+            try:
+                image = np.array(Image.open(cwalt_data_path+'/week' +str(week_loop)+'/'+ str(time).replace(' ','T').replace(':','-').split('+')[0] + '.jpg'))                
+                break
+            except:
+                continue
             
-        mask = image*0
+        try:
+            mask = image*0
+        except:
+            print('image not found for ' + str(time).replace(' ','T').replace(':','-').split('+')[0] + '.jpg' )   
+            continue
         image_original = image.copy()
             
         for index in ind:
@@ -156,7 +165,7 @@ def visualize_unoccluded_detection(timestamps_final,tracks_all,segmentation_all,
                 mask = poly_seg(image, segmentation_all[index])
         cv2.imwrite(cwalt_data_path +  '/' + camera_name+'_unoccluded_car_detection/' + str(index)+'.png', mask[:, :, ::-1])
 
-def repeated_indexes(tracks_all,ignore_ind, unoccluded_indexes=None):
+def repeated_indexes(tracks_all,ignore_ind, repeat_count = 10, unoccluded_indexes=None):
     get_indexes = lambda x, xs: [i for (y, i) in zip(xs, range(len(xs))) if bb_intersection_over_union(x, y) > 0.8 and i not in ignore_ind]
     repeat_ind = []
     repeat_inds =[]
@@ -166,7 +175,7 @@ def repeated_indexes(tracks_all,ignore_ind, unoccluded_indexes=None):
                 continue
 
             ind = get_indexes(track, tracks_all)
-            if len(ind) > 10:
+            if len(ind) > repeat_count:
                 repeat_ind.extend(ind)
                 repeat_inds.append([ind,track])
     else:
@@ -174,7 +183,7 @@ def repeated_indexes(tracks_all,ignore_ind, unoccluded_indexes=None):
             if index in repeat_ind or index in ignore_ind:
                 continue
             ind = get_indexes(tracks_all[index], tracks_all)
-            if len(ind) > 10:
+            if len(ind) > repeat_count:
                 repeat_ind.extend(ind)
                 repeat_inds.append([ind,tracks_all[index]])
         
@@ -185,27 +194,22 @@ def poly_seg(image, segm):
     poly = np.array(segm).reshape((int(len(segm)/2), 2))
     overlay = image.copy()
     alpha = 0.5
-
     cv2.fillPoly(overlay, [poly], color=(255, 255, 0))
-    cv2.addWeighted(overlay, 0.5, image, 1 - alpha, 0, image)
+    cv2.addWeighted(overlay, alpha, image, 1 - alpha, 0, image)
     return image
 
-def visualize_unoccuded_clusters(repeat_inds, tracks, segmentation_all, timestamps_final):
+def visualize_unoccuded_clusters(repeat_inds, tracks, segmentation_all, timestamps_final, cwalt_data_path):
     for index_, repeat_ind in enumerate(repeat_inds):
-        try:
-            image = np.array(Image.open(data_folder+'/'+'T18-median_image.jpg'))
-        except:
-            time = timestamps_final[0]
-            image = np.array(Image.open(data_folder+'/'+str(time.year)+'-'+str(time.month) +'/' + str(timestamps_final[0]).replace(' ','T').replace(':','-').split('+')[0] + '.jpg'))
-            print('mean image not computed')
+        image = np.array(Image.open(cwalt_data_path+'/'+'T18-median_image.jpg'))
         try:        
-            os.mkdir(cwalt_data_path+ '/cropped/')
+            os.mkdir(cwalt_data_path+ '/Cwalt_database/')
         except:
             print('folder exists')
         try:
-            os.mkdir(cwalt_data_path+ '/cropped/' + str(index_) +'/')
+            os.mkdir(cwalt_data_path+ '/Cwalt_database/' + str(index_) +'/')
         except:
-            print(cwalt_data_path+ '/cropped/' + str(index_) +'/')
+            print(cwalt_data_path+ '/Cwalt_database/' + str(index_) +'/')
+            
         for i in repeat_ind[0]:
             try:
                 bb_left, bb_top, bb_width, bb_height, confidence = tracks[i]#bbox
@@ -214,32 +218,27 @@ def visualize_unoccuded_clusters(repeat_inds, tracks, segmentation_all, timestam
                     
             cv2.rectangle(image,(int(bb_left), int(bb_top)),(int(bb_left+bb_width), int(bb_top+bb_height)),(0, 0, 255), 2)
             time = timestamps_final[i]
-            
-            try:
-                image1 = np.array(Image.open(data_folder+'/'+str(time.year)+'-'+str(time.month).zfill(2) +'/'+ str(time).replace(' ','T').replace(':','-').split('+')[0] + '.jpg'))
-            except:
-                print('image not found') 
+            for week_loop in range(5):
+                try:
+                    image1 = np.array(Image.open(cwalt_data_path+'/week' +str(week_loop)+'/'+ str(time).replace(' ','T').replace(':','-').split('+')[0] + '.jpg'))                
+                    break
+                except:
+                    continue
                 
             crop = image1[int(bb_top): int(bb_top + bb_height), int(bb_left):int(bb_left + bb_width)]
-            cv2.imwrite(camera_name+ '/cropped/' + str(index_) +'/o_' + str(i) +'.jpg', crop[:, :, ::-1])
+            cv2.imwrite(cwalt_data_path+ '/Cwalt_database/' + str(index_) +'/o_' + str(i) +'.jpg', crop[:, :, ::-1])
             image1 = poly_seg(image1,segmentation_all[i])
             crop = image1[int(bb_top): int(bb_top + bb_height), int(bb_left):int(bb_left + bb_width)]
-            cv2.imwrite(camera_name+ '/cropped/' + str(index_) +'/' + str(i)+'.jpg', crop[:, :, ::-1])
+            cv2.imwrite(cwalt_data_path+ '/Cwalt_database/' + str(index_) +'/' + str(i)+'.jpg', crop[:, :, ::-1])
         if index_ > 100:
             break
 
-        cv2.imwrite(camera_name+ '/cropped/' +  str(index_) +'.jpg', image[:, :, ::-1])
+        cv2.imwrite(cwalt_data_path+ '/Cwalt_database/' +  str(index_) +'.jpg', image[:, :, ::-1])
         
-def Get_unoccluded_objects(debug = False):
-    camera_name = 'fifth_craig3'
-    data_folder = '/media/data2/processedframes/' + camera_name
-    cwalt_data_path = 'data/' + camera_name 
+def Get_unoccluded_objects(camera_name, debug = False, scale=True):
+    cwalt_data_path = 'data/' + camera_name
+    data_folder = cwalt_data_path
     json_file_path = cwalt_data_path + '/' + camera_name + '.json'
-    
-    try:
-        os.mkdir(camera_name)
-    except:
-        print(camera_name)
         
     with open(json_file_path, 'r') as j:
         annotations = json.loads(j.read())
@@ -249,13 +248,26 @@ def Get_unoccluded_objects(debug = False):
     labels_all = [anno['label_id'] for anno in annotations]
     timestamps_final = [parse(anno['time']) for anno in annotations]
     
-    timestamps_final = timestamps_final[:100]
-    labels_all = labels_all[:100]
-    segmentation_all = segmentation_all[:100]
-    tracks_all = tracks_all[:100]
+    if scale ==True:
+        scale_factor = 2
+        tracks_all_numpy = np.array(tracks_all)
+        tracks_all_numpy[:,:4] = np.array(tracks_all)[:,:4]/scale_factor
+        tracks_all = tracks_all_numpy.tolist()
+        
+        segmentation_all_scaled = []
+        for list_loop in segmentation_all:
+            segmentation_all_scaled.append((np.floor_divide(np.array(list_loop),scale_factor)).tolist())
+        segmentation_all = segmentation_all_scaled
+        
+    if debug == True:
+        timestamps_final = timestamps_final[:1000]
+        labels_all = labels_all[:1000]
+        segmentation_all = segmentation_all[:1000]
+        tracks_all = tracks_all[:1000]
 
     unoccluded_indexes, stationary = get_unoccluded_instances(timestamps_final, tracks_all, threshold = 0.05)
-    visualize_unoccluded_detection(timestamps_final,tracks_all,segmentation_all, unoccluded_indexes)
+    if debug == True:
+        visualize_unoccluded_detection(timestamps_final, tracks_all, segmentation_all, unoccluded_indexes, cwalt_data_path, camera_name)
     
     tracks_all_unoccluded = [tracks_all[i] for i in unoccluded_indexes]
     segmentation_all_unoccluded = [segmentation_all[i] for i in unoccluded_indexes]
@@ -263,9 +275,12 @@ def Get_unoccluded_objects(debug = False):
     timestamps_final_unoccluded = [timestamps_final[i] for i in unoccluded_indexes]
     np.savez(json_file_path,tracks_all_unoccluded=tracks_all_unoccluded, segmentation_all_unoccluded=segmentation_all_unoccluded, labels_all_unoccluded=labels_all_unoccluded, timestamps_final_unoccluded=timestamps_final_unoccluded )
 
-    repeat_inds_clusters = repeated_indexes(tracks_all_unoccluded,[])
     if debug == True:
-        visualize_unoccuded_clusters(repeat_inds_clusters, tracks_all_unoccluded, segmentation_all_unoccluded, timestamps_final_unoccluded)
+        repeat_inds_clusters = repeated_indexes(tracks_all_unoccluded,[], repeat_count=1)
+        visualize_unoccuded_clusters(repeat_inds_clusters, tracks_all_unoccluded, segmentation_all_unoccluded, timestamps_final_unoccluded, cwalt_data_path)
+    else:
+        repeat_inds_clusters = repeated_indexes(tracks_all_unoccluded,[], repeat_count=10)
+
     np.savez(json_file_path + '_clubbed', repeat_inds=repeat_inds_clusters)
     np.savez(json_file_path + '_stationary', stationary=stationary)
 
