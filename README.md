@@ -62,18 +62,30 @@ docker run --gpus all --shm-size=8g -v $PWD:/code walt python cwalt_generate.py
 For Training the WALNET for the data use the following script:
 
 ```bash
-sudo docker run --gpus all --shm-size=8g -v $PWD:/code walt python train.py configs/walt/walt_vehicle.py
+sudo docker run --gpus all --shm-size=24g -v $PWD:/code walt python train.py configs/walt/walt_vehicle.py
 ```
 
 For Evaluations of the trained model run the following commands
 ```bash
-sudo docker run --gpus all --shm-size=8g -v $PWD:/code walt python test.py configs/walt/walt_vehicle.py {Trained Model}.pth --eval bbox
+sudo docker run --gpus all --shm-size=24g -v $PWD:/code walt python test.py configs/walt/walt_vehicle.py {Trained Model}.pth --eval bbox
 ```
 
 Inference on the images with occlusions run
 For 
 ```bash
-sudo docker run --gpus all --shm-size=8g -v $PWD:/code walt python infer.py configs/walt/walt_vehicle.py  
+sudo docker run --gpus all --shm-size=24g -v $PWD:/code walt python infer.py 
+```
+
+### Citation
+```
+@InProceedings{Reddy_2022_CVPR,
+    author    = {Reddy, N. Dinesh and Tamburo, Robert and Narasimhan, Srinivasa G.},
+    title     = {WALT: Watch and Learn 2D Amodal Representation From Time-Lapse Imagery},
+    booktitle = {Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR)},
+    month     = {June},
+    year      = {2022},
+    pages     = {9356-9366}
+}
 ```
 
 
