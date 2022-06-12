@@ -73,6 +73,9 @@ sudo docker run --gpus all --shm-size=24g -v $PWD:/code walt python test.py conf
 Inference on the images with occlusions run
 For 
 ```bash
+mkdir data/models
+wget https://www.cs.cmu.edu/~walt/models/walt_people.pth data/models/
+wget https://www.cs.cmu.edu/~walt/models/walt_vehicle.pth data/models/
 sudo docker run --gpus all --shm-size=24g -v $PWD:/code walt python infer.py 
 ```
 
