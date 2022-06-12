@@ -5,14 +5,14 @@ import psycopg2
 import cv2
 
 
-CONNECTION = "postgres://postgres:1l1mLab@128.2.176.224:5433/detections"
+CONNECTION = "postgres://postgres:"
 
 conn = psycopg2.connect(CONNECTION)
 cursor = conn.cursor(cursor_factory=RealDictCursor)
 
 
 def get_sample():
-    camera_name, camera_id = 'fifth_craig3', 4
+    camera_name, camera_id = 'cam2', 4
     
     print('Executing SQL command')
 
