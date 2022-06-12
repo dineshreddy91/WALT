@@ -74,8 +74,8 @@ Inference on the images with occlusions run
 For 
 ```bash
 mkdir data/models
-wget https://www.cs.cmu.edu/~walt/models/walt_people.pth -O data/models/
-wget https://www.cs.cmu.edu/~walt/models/walt_vehicle.pth -O data/models/
+wget https://www.cs.cmu.edu/~walt/models/walt_people.pth -O data/models/walt_people.pth
+wget https://www.cs.cmu.edu/~walt/models/walt_vehicle.pth -O data/models/walt_vehicle.pth
 sudo docker run --gpus all --shm-size=24g -v $PWD:/code walt python infer.py 
 ```
 
