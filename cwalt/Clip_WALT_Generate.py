@@ -19,8 +19,6 @@ from PIL import Image
 
 
 import json
-from psycopg2.extras import RealDictCursor
-import psycopg2
 import cv2
 
 import numpy as np

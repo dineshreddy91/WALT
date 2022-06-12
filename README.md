@@ -59,13 +59,21 @@ docker run --gpus all --shm-size=8g -v $PWD:/code walt python cwalt_generate.py
 <img src="github_vis/cwalt.gif" width="800" height="300"/>
 
 ### Training WALTNET
-For Training run
+For Training the WALNET for the data use the following script:
 
 ```bash
-python train.py configs/walt/walt_vehicle.py
+sudo docker run --gpus all --shm-size=8g -v $PWD:/code walt python train.py configs/walt/walt_vehicle.py
 ```
 
-For Testing run
+For Evaluations of the trained model run the following commands
 ```bash
-python test.py configs/walt/walt_vehicle.py data/models/walt_vehicle.pth
+sudo docker run --gpus all --shm-size=8g -v $PWD:/code walt python test.py configs/walt/walt_vehicle.py {Trained Model}.pth --eval bbox
 ```
+
+Inference on the images with occlusions run
+For 
+```bash
+sudo docker run --gpus all --shm-size=8g -v $PWD:/code walt python infer.py configs/walt/walt_vehicle.py  
+```
+
+

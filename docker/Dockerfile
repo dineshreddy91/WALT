@@ -41,6 +41,7 @@ RUN pip uninstall -y apex || :
 RUN SHA=ToUcHMe git clone https://github.com/NVIDIA/apex.git
 WORKDIR /tmp/unique_for_apex/apex
 RUN pip install -v --no-cache-dir --global-option="--cpp_ext" --global-option="--cuda_ext" .
+RUN pip install seaborn sklearn imantics
 WORKDIR /code
 
 #RUN git clone https://github.com/NVIDIA/apex

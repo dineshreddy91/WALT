@@ -21,6 +21,7 @@ import imagesize
 from concurrent.futures import ProcessPoolExecutor
 import multiprocessing as mp
 from copy import deepcopy
+from tqdm import tqdm
 
 @DATASETS.register_module()
 class WaltDataset(CustomDataset):
@@ -105,12 +106,11 @@ class WaltDataset(CustomDataset):
         #for img_folder in sorted(glob.glob(ann_file + '/*')):
         img_folder  = ann_file
         #print(img_folder + '/images/*', glob.glob(img_folder + '/images/*'))
-        for img_name in sorted(glob.glob(img_folder + '/images/*')):
+        for img_name in tqdm(sorted(glob.glob(img_folder + '/images/*')), desc="Converting CWALT to COCO format "):
                 cam_name = img_folder.split('/')[-1]
                 import imagesize
                 width, height = imagesize.get(img_name)
                 img_name = img_name.split('/')[-1] #.replace('.npz','.png')
-                print(img_name, cam_name, width, height)
                 info = dict(license=3, height=height, width=width, file_name = img_name, date_captured = img_name.split('/')[-1].split('.')[0], id = count, filename = img_name, camname = cam_name)
                 self.data_infs.append(info)
 
