@@ -1,7 +1,7 @@
 WALT:Watch and Learn 2D Amodal Representation using time-lapse imagery
 ======================
 
-[N Dinesh Reddy](http://cs.cmu.edu/~dnarapur), [Robert T](http://cs.cmu.edu/~mvo), [Srinivasa G. Narasimhan](http://www.cs.cmu.edu/~srinivas/)
+[N Dinesh Reddy](http://cs.cmu.edu/~dnarapur), [Robert Tamburo](https://www.ri.cmu.edu/ri-people/robert-joseph-tamburo/), [Srinivasa G. Narasimhan](http://www.cs.cmu.edu/~srinivas/)
 
 IEEE Conference on Computer Vision and Pattern Recognition (CVPR), 2022. 
 
@@ -58,17 +58,20 @@ docker run --gpus all --shm-size=8g -v $PWD:/code walt python cwalt_generate.py
 ```
 <img src="github_vis/cwalt.gif" width="800" height="300"/>
 
-### Training WALTNET
+### Training 
 For Training the WALNET for the data use the following script:
 
 ```bash
 sudo docker run --gpus all --shm-size=24g -v $PWD:/code walt python train.py configs/walt/walt_vehicle.py
 ```
 
+### Testing
+
 For Evaluations of the trained model run the following commands
 ```bash
 sudo docker run --gpus all --shm-size=24g -v $PWD:/code walt python test.py configs/walt/walt_vehicle.py {Trained Model}.pth --eval bbox
 ```
+### InFerence Script on Demo videos 
 
 Inference on the images with occlusions run
 For 
