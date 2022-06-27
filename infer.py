@@ -73,7 +73,7 @@ class detections():
         with open(filename + '.json', 'w') as f:
             json.dump(self.record_dict, f)
 
-
+ 
 def main():
     detect_people = detections('configs/walt/walt_people.py', 'cuda:0', model_path='data/models/walt_people.pth')
     detect = detections('configs/walt/walt_vehicle.py', 'cuda:0', model_path='data/models/walt_vehicle.pth')
