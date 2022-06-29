@@ -165,13 +165,12 @@ def imshow_det_bboxes(img,
                 color_mask = mask_colors[np.random.randint(0, 99)]
                 mask = segms[len(labels)*ll+i].astype(bool)
                 show_border = True
-                #img[mask] = img[mask] * 0.5 + color_mask * 0.5
+                img[mask] = img[mask] * 0.5 + color_mask * 0.5
                 if show_border:
                     contours,_ = cv2.findContours(mask.copy().astype('uint8'), cv2.RETR_CCOMP, cv2.CHAIN_APPROX_NONE)
-                    border_thick = min(int(4*(max(bbox_int[2]-bbox_int[0],bbox_int[3]-bbox_int[1])/200))+1,6)
-                    print(border_thick, bbox_int)
-                    cv2.drawContours(img_bound, contours, -1, (int(color_mask[0][0]),int(color_mask[0][1]),int(color_mask[0][2])), border_thick)
-    img = cv2.addWeighted(img,1.0,img_bound,0.6,0)
+                    border_thick = min(int(4*(max(bbox_int[2]-bbox_int[0],bbox_int[3]-bbox_int[1])/300))+1,6)
+                    cv2.drawContours(img, contours, -1, (int(color_mask[0][0]),int(color_mask[0][1]),int(color_mask[0][2])), border_thick)
+    #img = cv2.addWeighted(img,1.0,img_bound,1.0,0)
     
     #img[img_bound>0] = img_bound
 
