@@ -1,0 +1,13 @@
+--find-links https://download.pytorch.org/whl/torch_stable.html
+torch==1.9.0+cpu
+--find-links https://download.openmmlab.com/mmcv/dist/cpu/torch1.9.0/index.html
+mmcv-full==1.4.0
+gradio==3.0.20
+timm 
+scikit-image 
+imagesize
+torchvision==0.10.0+cpu 
+imantics
+terminaltables
+pycocotools
+mmdet==2.16.0

@@ -11,12 +11,12 @@ import os
 import cv2, glob
 
 class detections():
-    def __init__(self, cfg_path, device, model_path = 'data/models/walt_vehicle.pth'):
+    def __init__(self, cfg_path, device, model_path = 'data/models/walt_vehicle.pth', threshold=0.85):
         self.model = init_detector(cfg_path, model_path, device=device)
         self.all_preds = []
         self.all_scores = []
         self.index = []
-        self.score_thr = 0.92
+        self.score_thr = threshold
         self.result = []
         self.record_dict = {'model': cfg_path,'results': []}
         self.detect_count = []
@@ -75,8 +75,12 @@ class detections():
 
  
 def main():
-    detect_people = detections('configs/walt/walt_people.py', 'cuda:0', model_path='data/models/walt_people.pth')
-    detect = detections('configs/walt/walt_vehicle.py', 'cuda:0', model_path='data/models/walt_vehicle.pth')
+    if torch.cuda.is_available() == False:
+        device='cpu'
+    else:
+        device='cuda:0'
+    detect_people = detections('configs/walt/walt_people.py', device, model_path='data/models/walt_people.pth')
+    detect = detections('configs/walt/walt_vehicle.py', device, model_path='data/models/walt_vehicle.pth')
     filenames = sorted(glob.glob('demo/images/*'))
     count = 0
     for filename in filenames:
@@ -110,5 +114,5 @@ def main():
     asas
     detect.process_output(0)
     '''
-
-main()
+if __name__ == "__main__":
+    main()
