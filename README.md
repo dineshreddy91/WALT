@@ -71,10 +71,10 @@ For Evaluations of the trained model run the following commands
 ```bash
 sudo docker run --gpus all --shm-size=24g -v $PWD:/code walt python test.py configs/walt/walt_vehicle.py {Trained Model}.pth --eval bbox
 ```
-### InFerence Script on Demo videos 
+### Inference Script on Demo Images
 
 Inference on the images with occlusions run
-For 
+ 
 ```bash
 mkdir data/models
 wget https://www.cs.cmu.edu/~walt/models/walt_people.pth -O data/models/walt_people.pth
@@ -82,6 +82,17 @@ wget https://www.cs.cmu.edu/~walt/models/walt_vehicle.pth -O data/models/walt_ve
 sudo docker run --gpus all --shm-size=24g -v $PWD:/code walt python infer.py 
 ```
 
+### Demo of Amodal Segmentation
+Using Gradio we created a very simple cpu dependent demo of our network which can be run on any computer.
+
+```bash
+virtualenv waltdemo -p python3
+source waltdemo/bin/activate
+pip install -r requirements.txt
+python3 app.py
+```
+
+We have a live demo online at [[CVPR WALT DEMO](https://huggingface.co/spaces/CVPR/WALT)] and [[WALT DEMO](https://huggingface.co/spaces/dineshreddy/WALT)]
 ### Citation
 ```
 @InProceedings{Reddy_2022_CVPR,
